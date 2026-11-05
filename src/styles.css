@@ -1,0 +1,234 @@
+:root {
+  --bg: #08090c;
+  --ink: #fffcf0;
+  --accent: #1c70ec;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --bg: #fffcf0;
+  --ink: #08090c;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  transition: background-color 0.6s ease;
+}
+
+body {
+  margin: 0;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (pointer: fine) {
+  html {
+    overscroll-behavior: none;
+  }
+}
+
+/* The page is only a scroll track. Everything visible stays fixed on top of it. */
+.track {
+  height: 620vh;
+  height: 620svh;
+}
+
+.stage {
+  position: fixed;
+  inset: 0;
+  height: 100vh;
+  height: 100lvh;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.stage:active {
+  cursor: grabbing;
+}
+
+/* The Meteor can't be dragged, so it keeps the plain cursor. */
+.stage.plain,
+.stage.plain:active {
+  cursor: default;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: max(20px, env(safe-area-inset-top));
+  right: max(20px, env(safe-area-inset-right));
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--ink) 24%, transparent);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    border-color 0.25s ease,
+    color 0.6s ease;
+}
+
+.theme-toggle:hover {
+  border-color: var(--accent);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.concepts {
+  position: fixed;
+  top: max(20px, env(safe-area-inset-top));
+  left: max(20px, env(safe-area-inset-left));
+  right: 84px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.concepts a {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid color-mix(in srgb, var(--ink) 24%, transparent);
+  border-radius: 50%;
+  color: var(--ink);
+  font: 500 13px/1 system-ui, sans-serif;
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.concepts a:hover {
+  border-color: var(--accent);
+}
+
+.concepts a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.concepts a[aria-current='page'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fffcf0;
+}
+
+/* The universal scroll sign: a mouse with a rolling wheel, and arrows running down. Phones get the arrows alone. */
+.scroll-cue {
+  position: fixed;
+  left: 50%;
+  bottom: max(26px, env(safe-area-inset-bottom));
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  color: var(--ink);
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scroll-mouse {
+  position: relative;
+  width: 26px;
+  height: 42px;
+  border: 1.5px solid currentColor;
+  border-radius: 13px;
+}
+
+.scroll-mouse::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  width: 4px;
+  height: 8px;
+  margin-left: -2px;
+  border-radius: 2px;
+  background: var(--accent);
+  animation: wheel 1.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+.scroll-arrows {
+  position: relative;
+  width: 14px;
+  height: 18px;
+}
+
+.scroll-arrows::before,
+.scroll-arrows::after {
+  content: '';
+  position: absolute;
+  left: 2px;
+  width: 8px;
+  height: 8px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  animation: arrow 1.5s ease-in-out infinite;
+}
+
+.scroll-arrows::before {
+  top: 0;
+}
+
+.scroll-arrows::after {
+  top: 7px;
+  animation-delay: 0.18s;
+}
+
+@media (pointer: coarse) {
+  .scroll-mouse {
+    display: none;
+  }
+}
+
+@keyframes wheel {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+@keyframes arrow {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-mouse::after,
+  .scroll-arrows::before,
+  .scroll-arrows::after {
+    animation: none;
+  }
+
+  html,
+  .theme-toggle {
+    transition: none;
+  }
+}
